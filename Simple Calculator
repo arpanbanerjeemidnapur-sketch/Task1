@@ -1,0 +1,36 @@
+#  Simple Calculator
+
+A modern calculator built using HTML, CSS, and JavaScript.
+
+## ✨ Features
+- Addition, Subtraction, Multiplication, Division
+- Decimal support
+- Division by zero handling
+- Keyboard support
+- Clean UI design
+- Error handling
+
+## ⌨️ Keyboard Shortcuts
+- Numbers: 0–9
+- Operators: + - * /
+- Enter: Calculate
+- Backspace: Delete
+- Esc: Clear
+
+## 🚀 How to Run
+
+1. Clone the repository:
+   git clone https://github.com/your-username/simple-calculator.git
+
+2. Open folder in VS Code
+
+3. Open `index.html`
+
+4. Use Live Server or open directly in browser
+
+## 🌍 Deploy on GitHub Pages
+
+Go to:
+Settings → Pages → Deploy from main branch → root
+
+Your calculator will be live online!
