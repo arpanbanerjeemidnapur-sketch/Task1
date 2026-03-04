@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-#  Replace with your real BrowserStack credentials
+#  Replace with your actual BrowserStack credentials
 USERNAME = "YOUR_BROWSERSTACK_USERNAME"
 ACCESS_KEY = "YOUR_BROWSERSTACK_ACCESS_KEY"
 
@@ -15,46 +15,41 @@ class SwagLabsTest(unittest.TestCase):
 
     def setUp(self):
 
-        #  Change browser here if needed
-        self.browser = "Chrome"   # Chrome / Firefox / Edge / Safari
+        #  Change browser here: chrome / firefox / edge / safari
+        self.browser = "chrome"
 
-        # Create correct browser options
-        if self.browser == "Chrome":
+        bstack_options = {
+            "os": "Windows",
+            "osVersion": "11",
+            "projectName": "Swag Labs Cross Browser Testing",
+            "buildName": "Build 1",
+            "sessionName": f"{self.browser} - Full Flow Test"
+        }
+
+        # Select browser options
+        if self.browser == "chrome":
             options = webdriver.ChromeOptions()
-            os_name = "Windows"
-            os_version = "11"
 
-        elif self.browser == "Firefox":
+        elif self.browser == "firefox":
             options = webdriver.FirefoxOptions()
-            os_name = "Windows"
-            os_version = "11"
 
-        elif self.browser == "Edge":
+        elif self.browser == "edge":
             options = webdriver.EdgeOptions()
-            os_name = "Windows"
-            os_version = "11"
 
-        elif self.browser == "Safari":
+        elif self.browser == "safari":
             options = webdriver.SafariOptions()
-            os_name = "OS X"
-            os_version = "Ventura"
+            bstack_options["os"] = "OS X"
+            bstack_options["osVersion"] = "Ventura"
 
         else:
             raise Exception("Unsupported Browser")
 
-        # BrowserStack capabilities
+        # Set W3C capabilities
         options.set_capability("browserName", self.browser)
         options.set_capability("browserVersion", "latest")
+        options.set_capability("bstack:options", bstack_options)
 
-        options.set_capability("bstack:options", {
-            "os": os_name,
-            "osVersion": os_version,
-            "projectName": "Swag Labs Cross Browser Testing",
-            "buildName": "Build 1",
-            "sessionName": f"{self.browser} - Login & Add To Cart Test"
-        })
-
-        # Start Remote WebDriver
+        # Start Remote Driver
         self.driver = webdriver.Remote(
             command_executor=BROWSERSTACK_URL,
             options=options
@@ -62,7 +57,7 @@ class SwagLabsTest(unittest.TestCase):
 
         self.wait = WebDriverWait(self.driver, 20)
 
-    def test_login_and_add_to_cart(self):
+    def test_login_add_cart_continue(self):
         driver = self.driver
 
         # Open website
@@ -81,18 +76,30 @@ class SwagLabsTest(unittest.TestCase):
             EC.visibility_of_element_located((By.CLASS_NAME, "inventory_list"))
         )
 
-        # Add to cart
-        add_button = self.wait.until(
+        # Add item to cart
+        self.wait.until(
             EC.element_to_be_clickable((By.ID, "add-to-cart-sauce-labs-backpack"))
-        )
-        add_button.click()
+        ).click()
 
-        # Verify cart badge
-        cart_badge = self.wait.until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "shopping_cart_badge"))
+        # Open cart
+        driver.find_element(By.CLASS_NAME, "shopping_cart_link").click()
+
+        # Wait for cart page
+        self.wait.until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "cart_list"))
         )
 
-        self.assertEqual(cart_badge.text, "1")
+        # Click Continue Shopping
+        self.wait.until(
+            EC.element_to_be_clickable((By.ID, "continue-shopping"))
+        ).click()
+
+        # Verify back to inventory page
+        self.wait.until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "inventory_list"))
+        )
+
+        self.assertIn("inventory", driver.current_url)
 
     def tearDown(self):
         self.driver.quit()
@@ -100,4 +107,3 @@ class SwagLabsTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-    
