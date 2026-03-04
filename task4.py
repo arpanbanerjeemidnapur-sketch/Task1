@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-# 🔐 Replace with your real BrowserStack credentials
+#  Replace with your real BrowserStack credentials
 USERNAME = "YOUR_BROWSERSTACK_USERNAME"
 ACCESS_KEY = "YOUR_BROWSERSTACK_ACCESS_KEY"
 
@@ -15,7 +15,7 @@ class SwagLabsTest(unittest.TestCase):
 
     def setUp(self):
 
-        # 👉 Change browser here if needed
+        #  Change browser here if needed
         self.browser = "Chrome"   # Chrome / Firefox / Edge / Safari
 
         # Create correct browser options
